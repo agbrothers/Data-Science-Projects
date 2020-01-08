@@ -9,7 +9,7 @@ from bs4 import BeautifulSoup
 # GET Calls return xml data -> use beautiful soup
 
 # ENDPOINT PARAMETERS
-ZWSID = "**-**************_*****"  # API Key
+ZWSID = "**-**************_*****"  # API Key, redacted
 citystatezip = 'Los+Angeles%2C+CA'
 
 # ENDPOINTS

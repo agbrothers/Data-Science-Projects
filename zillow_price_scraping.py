@@ -43,7 +43,4 @@ for i in range(data.shape[0]):
         #print(soup.find('amount'))
         data.loc[i,'Value'] = list(soup.find('amount').children)[0]
     
-    if i == 1:
-        break
-    
 data.to_csv("property_values.csv")

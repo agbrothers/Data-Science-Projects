@@ -18,6 +18,7 @@ region_children = "GetRegionChildren.htm?zws-id={ZWSID}&state={state}&city={city
 address_search = "GetSearchResults.htm?zws-id={ZWSID}&address={address}&citystatezip={citystatezip}"
 
 # Retrieve City of LA Address Data (> 1 million addresses)
+# Source - https://data.lacity.org/A-Well-Run-City/Addresses-in-the-City-of-Los-Angeles/4ca8-mxuh
 data = pd.read_csv("Addresses_in_the_City_of_Los_Angeles.csv")
 data = data.astype({'HSE_NBR':'str'}) # Change the col of address #'s from int to str
 
@@ -25,11 +26,7 @@ data = data.astype({'HSE_NBR':'str'}) # Change the col of address #'s from int t
 value = [0] * data.shape[0]
 data['Value'] = value
 
-
-i=0
-
-print('dataset parsing complete')
-
+# Retrieve the Property Value Data
 for i in range(data.shape[0]):
     number = data.HSE_NBR[i]
     direction = str(data.HSE_DIR_CD[i])

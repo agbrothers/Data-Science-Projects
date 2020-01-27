@@ -1,3 +1,4 @@
+import time
 import pandas as pd
 import urllib.request
 from selenium import webdriver
@@ -46,17 +47,15 @@ for year in Years:
         # Store the data
         data = []
         # Loop over Top 10 most viewed pages for that month
-        i = 0
-        for name in Names:
+        for i in range(10):
             if i == 10:
                 break
-            page_name = name.text
+            page_name = Names[i].text
             page_views = Views[i].text
-            link = name.find_element_by_tag_name('a')
+            link = Names[i].find_element_by_tag_name('a')
             page_link = link.get_attribute("href")
             # append dict to array
             data.append({"Year" : year,"Month" : month,"Page Name" : page_name,"Monthly Views" : page_views,"Page Link" : page_link})
-            i+=1
         
         # Save the data to a dataframe and append it to the master dataframe
         df = pd.DataFrame(data)

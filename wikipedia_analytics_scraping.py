@@ -20,15 +20,15 @@ extension = "{year}-{date}&excludes="
 
 # Create the master dataframe
 all_data = pd.DataFrame()
-j = 0
+month_in_2015 = 0
 
 # Executes a search for each month and year in the Topviews table
 for year in Years:
     for month in Months:
         
         # Data only exists beyond July 2015, this skips all earlier months in 2015
-        if j < 6:
-            j+=1
+        if month_in_2015 < 6:
+            month_in_2015+=1
             continue
         
         # Run the firefox webdriver from geckodriver executable path

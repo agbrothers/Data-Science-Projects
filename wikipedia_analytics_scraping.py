@@ -1,4 +1,3 @@
-import time
 import pandas as pd
 import urllib.request
 from selenium import webdriver

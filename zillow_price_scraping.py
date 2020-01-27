@@ -3,10 +3,11 @@ import json
 import pandas as pd
 from bs4 import BeautifulSoup
 
-
-# ZILLOW API
 # Pull all LA property value data for each residential address in LA from Zillow's API, if available
 # GET Calls return xml data -> use beautiful soup
+
+
+""" ZILLOW API """
 
 # ENDPOINT PARAMETERS
 ZWSID = "**-**************_*****"  # API Key, redacted

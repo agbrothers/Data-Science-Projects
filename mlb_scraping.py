@@ -1,9 +1,9 @@
-#%%
-# Importing libraries
 import pandas as pd
 import requests
 
-### Assembling DF's of stats for players ranked top 50 in launch speed for 2015-2019 ###
+
+""" Assembling DF's of stats for players ranked top 50 in launch speed for 2015-2019 """
+
 headers = ["batter", "year", "avg_launch_speed", "avg_height", "avg_distance", "avg_launch_angle"]
 all_dfs = dict()  # Creating the dictionary that will hold the DF for each year (2015-2019)
 
@@ -25,7 +25,8 @@ for year in range(2015, 2020):
 print(all_dfs)
 
 
-### DF of yearly averages for players ranked top 50 in launch speed ###
+""" DF of yearly averages for players ranked top 50 in launch speed """
+
 Year = range(2015, 2020)
 Launch_Speed = []  # Creating columns of DF, to be filled in with for loop below
 Height = []        #

@@ -19,7 +19,6 @@ extension = "{year}-{date}&excludes="
 
 
 """ SCRAPE PAGE DATA USING FIREFOX WEBDRIVER """
-
 # Create the master dataframe
 all_data = pd.DataFrame()
 month_in_2015 = 0
@@ -82,6 +81,5 @@ for year in Years:
    
     
 """ EXPORT THE DATA """
-
 all_data.index = np.linspace(0,len(all_data.index)-1,len(all_data.index)).astype(int) # Correct the dataframe indexing
 all_data.to_csv("topviews.csv")

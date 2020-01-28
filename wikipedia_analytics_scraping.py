@@ -10,6 +10,9 @@ from selenium import webdriver
 
 Years = [2015, 2016, 2017, 2018, 2019]
 Months = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12']
+Days = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12',
+        '13','14','15','16','17','18','19','20','21','22','23','24','25','26',
+        '27','28','29','30','31']
 
 base_url = "https://tools.wmflabs.org/topviews/?project=en.wikipedia.org&platform=all-access&date="
 extension = "{year}-{date}&excludes="
@@ -21,6 +24,9 @@ extension = "{year}-{date}&excludes="
 all_data = pd.DataFrame()
 month_in_2015 = 0
 
+# Record any dates that fail to be scraped
+missing_dates = []
+
 # Executes a search for each month and year in the Topviews table
 for year in Years:
     for month in Months:
@@ -30,41 +36,52 @@ for year in Years:
             month_in_2015+=1
             continue
         
-        # Run the firefox webdriver from geckodriver executable path
-        driver = webdriver.Firefox(executable_path = '/usr/local/bin/geckodriver')
-        driver.get(base_url + f"{year}-{month}&excludes=")
+        for day in Days:
+            # Run the firefox webdriver from geckodriver executable path
+            driver = webdriver.Firefox(executable_path = '/usr/local/bin/geckodriver')
+            driver.get(base_url + f"{year}-{month}-{day}&excludes=")
+            
+            # Sleep for 7s to let the webpage to load/execute js displaying table data for that month/year
+            time.sleep(7)
+            
+            # Execute js cmd to scroll to the bottom of the webpage to make sure data is loaded
+            driver.execute_script("window.scrollTo(0, document.body.scrollHeight);var lenOfPage=document.body.scrollHeight;return lenOfPage;")
+            
+            # Find Page Names & View Counts with xpath
+            Names = driver.find_elements_by_xpath("//*[@class='chart-container col-lg-12']//*[@class='table output-table']//*[@class='topview-entries']//*[@class='topview-entry']//*[@class='topview-entry--label-wrapper']//*[@class='topview-entry--label']")
+            print('Firefox Webdriver - Number of results', len(Names))
+            
+            Views = driver.find_elements_by_xpath("//*[@class='chart-container col-lg-12']//*[@class='table output-table']//*[@class='topview-entries']//*[@class='topview-entry']//*[@class='topview-entry--views']")
+            print('Firefox Webdriver - Number of results', len(Views))
+            
+            # if the page fails to load, record the date & skip it
+            if len(Names) == 0 or len(Views) == 0:
+                missing_dates.append((day,month,year))
+                driver.quit()
+                continue
+            
+            # Store the data
+            data = []
+            page_name = []
+            page_views = []
+            # Loop over Top 10 most viewed pages for that month
+            for i in range(10):
+                if i == 10:
+                    break
+                page_name.append(Names[i].text) 
+                page_views.append(int(Views[i].text.replace(',',''))) 
+                # append dict to array
+            data.append({"Year":year,"Month":month,"Day":day,"Page Name":page_name,"Monthly Views":page_views})
+            
+            # Save the data to a dataframe and append it to the master dataframe
+            df = pd.DataFrame(data)
+            all_data = all_data.append(df)
+            
+            # Close the driver
+            driver.quit()
+   
+    
+""" EXPORT THE DATA """
 
-        # Sleep for 9s to let the webpage to load/execute js displaying table data for that month/year
-        time.sleep(9)
-                
-        # Find elements by xpath
-        Names = driver.find_elements_by_xpath("//*[@class='chart-container col-lg-12']//*[@class='table output-table']//*[@class='topview-entries']//*[@class='topview-entry']//*[@class='topview-entry--label-wrapper']//*[@class='topview-entry--label']")
-        print('Firefox Webdriver - Number of results', len(Names))
-        
-        Views = driver.find_elements_by_xpath("//*[@class='chart-container col-lg-12']//*[@class='table output-table']//*[@class='topview-entries']//*[@class='topview-entry']//*[@class='topview-entry--views']")
-        print('Firefox Webdriver - Number of results', len(Views))
-        
-        # Store the data
-        data = []
-        # Loop over Top 10 most viewed pages for that month
-        for i in range(10):
-            if i == 10:
-                break
-            page_name = Names[i].text
-            page_views = Views[i].text
-            link = Names[i].find_element_by_tag_name('a')
-            page_link = link.get_attribute("href")
-            # append dict to array
-            data.append({"Year" : year,"Month" : month,"Page Name" : page_name,"Monthly Views" : page_views,"Page Link" : page_link})
-        
-        # Save the data to a dataframe and append it to the master dataframe
-        df = pd.DataFrame(data)
-        df['Monthly Views'] = df['Monthly Views'].str.replace(',','')
-        df['Monthly Views'] = df['Monthly Views'].astype(int)
-        all_data = all_data.append(df)
-        
-        # Close the driver
-        driver.quit()
-      
-# Export the data
+all_data.index = np.linspace(0,len(all_data.index)-1,len(all_data.index)).astype(int) # Correct the dataframe indexing
 all_data.to_csv("topviews.csv")

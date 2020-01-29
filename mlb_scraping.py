@@ -44,7 +44,6 @@ avgs_by_year = {"Year": Year,
                 "Height": Height,
                 "Distance": Distance,
                 "Launch Angle": Launch_Angle}
-avgs_by_year = pd.DataFrame(avgs_by_year)
-avgs_by_year
 
+avgs_by_year = pd.DataFrame(avgs_by_year)
 avgs_by_year.to_csv("DSU_juice.csv")

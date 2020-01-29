@@ -1,6 +1,6 @@
 import pandas as pd
 import requests
-
+import json
 
 """ Assembling DF's of stats for players ranked top 50 in launch speed for 2015-2019 """
 

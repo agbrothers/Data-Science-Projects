@@ -1,4 +1,5 @@
 import time
+import numpy as np
 import pandas as pd
 import urllib.request
 from selenium import webdriver
@@ -19,6 +20,7 @@ extension = "{year}-{date}&excludes="
 
 
 """ SCRAPE PAGE DATA USING FIREFOX WEBDRIVER """
+
 # Create the master dataframe
 all_data = pd.DataFrame()
 month_in_2015 = 0
@@ -60,20 +62,15 @@ for year in Years:
                 continue
             
             # Store the data
-            data = []
-            page_name = []
-            page_views = []
-            # Loop over Top 10 most viewed pages for that month
-            for i in range(10):
-                if i == 10:
-                    break
-                page_name.append(Names[i].text) 
-                page_views.append(int(Views[i].text.replace(',',''))) 
-                # append dict to array
-            data.append({"Year":year,"Month":month,"Day":day,"Page Name":page_name,"Monthly Views":page_views})
+            df = pd.DataFrame({"Year":year,"Month":month,"Day":day}, index=[0])
             
+            # Loop over Top 10 most viewed pages for that month, two loops used to create the desired data structure
+            for i in range(10):
+                df[f"Name{i}"] = Names[i].text
+            for i in range(10):    
+                df[f"Views{i}"] = Views[i].text.replace(',','')
+
             # Save the data to a dataframe and append it to the master dataframe
-            df = pd.DataFrame(data)
             all_data = all_data.append(df)
             
             # Close the driver
@@ -81,5 +78,6 @@ for year in Years:
    
     
 """ EXPORT THE DATA """
+
 all_data.index = np.linspace(0,len(all_data.index)-1,len(all_data.index)).astype(int) # Correct the dataframe indexing
 all_data.to_csv("topviews.csv")

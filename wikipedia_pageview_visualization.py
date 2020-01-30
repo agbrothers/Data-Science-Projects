@@ -1,4 +1,3 @@
-import time
 import pandas as pd
 import numpy as np
 import matplotlib
@@ -7,8 +6,7 @@ import matplotlib.pyplot as plt
 plt.rcParams['animation.ffmpeg_path'] = '/usr/local/bin/ffmpeg'
 import matplotlib.animation as animation
 
-
-# Visualizing wikipedia pageview data from a previous project with an animated bar chart
+# Visualizing wikipedia top pageview data from a previous project with an animated bar chart
 
 """ DATA """
 
@@ -17,7 +15,6 @@ data = pd.read_csv("alldata.csv")
 number_of_frames = data.shape[0]
 frame_rate = 1
 fig,ax = plt.subplots(figsize=(15,8))
-
 
 
 """ BAR CHART DRAWING FUNCTION """
@@ -46,10 +43,6 @@ def draw(frames, data):
     ax.grid(which='major', axis='x', linestyle='-')
     ax.set_axisbelow(True)
     plt.gcf().subplots_adjust(left=0.3, bottom=0.2)
-    #plt.tight_layout()
-    
-
-#draw(0,data)
 
 anim = animation.FuncAnimation(fig, draw, number_of_frames, fargs=(data, ), interval=(1/frame_rate)*1000, blit=False)
 plt.show()  
@@ -57,12 +50,4 @@ plt.show()
 #Set up formatting for the movie files
 Writer = animation.writers['pillow']
 writer = Writer(fps=frame_rate, metadata=dict(artist='Me'), bitrate=1800)
-
-#anim.save('barchart_animated_'+str(n)+'.mp4')
 anim.save('mymovie.mp4',writer=writer)
-
-
-
-
-
-

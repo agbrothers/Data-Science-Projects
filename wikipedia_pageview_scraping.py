@@ -26,7 +26,7 @@ def scrape_data(day,month,year):
     
     # If the page fails to load, recursively load it until data is successfully scraped
     if len(Names) == 0 or len(Views) == 0:
-        return(scrape_data(day,month,year) )
+        return(scrape_data(day,month,year))
     
     # Store the data
     df = pd.DataFrame({"Year":year,"Month":month,"Day":day}, index=[0])

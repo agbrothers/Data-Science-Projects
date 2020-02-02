@@ -3,11 +3,10 @@ import pandas as pd
 import sqlite3
 import matplotlib.pyplot as plt
 import seaborn as sns
-# from mpl_toolkits.basemap import basemap
 from numpy.random import randn
 
-"""
-# CONNECT to the SQLite Database
+
+""" PULL DATA FROM SQLite DATABASE """
 conn = sqlite3.connect("FPA_FOD_20170508.sqlite")
 c = conn.cursor()
 
@@ -23,44 +22,12 @@ data = pd.DataFrame(rawd, columns=['FIRE_NAME','FIRE_YEAR','DISCOVERY_DATE',
                                    'STAT_CAUSE_DESCR','CONT_DATE','CONT_TIME',
                                    'FIRE_SIZE','FIRE_SIZE_CLASS','STATE','COUNTY','FIPS_NAME'])
 data.to_csv('wildfires.csv')
-"""
-
-# After already loading and saving SQLITE data
-data = pd.read_csv('wildfires.csv')
-
-# Data Vis
-"""
-# Nine random samples of n=10000 fires, looking to see when the largest fires occur
-fig = plt.figure(figsize=(11,8))
-ax1 = fig.add_subplot(3,3,1)
-ax2 = fig.add_subplot(3,3,2)
-ax3 = fig.add_subplot(3,3,3)
-ax4 = fig.add_subplot(3,3,4)
-ax5 = fig.add_subplot(3,3,5)
-ax6 = fig.add_subplot(3,3,6)
-ax7 = fig.add_subplot(3,3,7)
-ax8 = fig.add_subplot(3,3,8)
-ax9 = fig.add_subplot(3,3,9)
 
 
-plots = [ax1,ax2,ax3,ax4,ax5,ax6,ax7,ax8,ax9]
-for ax in plots:
-    df = data.sample(n=10000) # 10000 fire random sample
-    
-    # Remove outlier fires of size > 200
-    df.drop(df[df.FIRE_SIZE > 200].index, inplace=True) 
-    df.drop(df[df.FIRE_SIZE < 5].index, inplace=True) 
-    ax.scatter(x=df.DISCOVERY_DOY, y=df.FIRE_SIZE, c='#FFAC2F', marker='.', alpha=0.3)
-    
-    plt.xlabel("Day of Year Discovered")
-    plt.ylabel("Fire Size")
-    
-plt.tight_layout()
-plt.show()
-"""
-
+""" DATA VISUALIZATION """
 
 """ HEATMAP BY DOY """
+# visualize when fires occur throughout the year & how it changes YoY
 fig1 = plt.figure()
 years = list(range(min(data.FIRE_YEAR), max(data.FIRE_YEAR),1))
 heatmap1 = pd.DataFrame()
@@ -81,9 +48,10 @@ plt.show()
 
 
 """ HEATMAP BY FIRE SIZE """
+# Visualize when fires of a given size occur throughout the year
 fig2 = plt.figure()
 sizes = list(set(data.FIRE_SIZE_CLASS))
-sizes = ['A','B','C','D','E','F','G']
+sizes = ['A','B','C','D','E','F','G']   # Classes by increasing size (A smallest, G largest)
 heatmap2 = pd.DataFrame()
 
 for size in sizes:
@@ -103,6 +71,7 @@ plt.show()
 
 
 """ HEATMAP BY LARGE FIRE SIZE """
+# Larger fires are far less frequent, this heatmap highlights the distribution of those fires
 fig3 = plt.figure()
 sizes = list(set(data.FIRE_SIZE_CLASS))
 sizes = ['D','E','F','G']
@@ -122,12 +91,3 @@ plt.ylabel("SIZE CLASS\n")
 plt.title("DISTRIBUTION OF LARGE FIRES BY DOY\n")
 plt.tight_layout()
 plt.show()
-
-             
-# Bubble Plot
-
-
-
-# Bubble Map                          
-             
-             

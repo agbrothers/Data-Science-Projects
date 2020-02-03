@@ -22,11 +22,11 @@ data = pd.DataFrame(rawd, columns=['FIRE_NAME','FIRE_YEAR','DISCOVERY_DATE',
                                    'STAT_CAUSE_DESCR','CONT_DATE','CONT_TIME',
                                    'FIRE_SIZE','FIRE_SIZE_CLASS','STATE','COUNTY','FIPS_NAME'])
 data.to_csv('wildfires.csv')
+data = data[data['STATE'] == 'CA']
 
 
 """ DATA VISUALIZATION """
-
-""" HEATMAP BY DOY """
+"""   HEATMAP BY DOY   """
 # visualize when fires occur throughout the year & how it changes YoY
 fig1 = plt.figure()
 years = list(range(min(data.FIRE_YEAR), max(data.FIRE_YEAR),1))
@@ -38,6 +38,7 @@ for year in years:
     heatmap1 = heatmap1.append(row)
 
 heatmap1 = heatmap1.drop(columns=[0,366])
+heatmap1 = heatmap1.replace(np.nan, 0.0)
 sns.heatmap(heatmap1)
 plt.gca().invert_yaxis()
 plt.xlabel("\nDay of Year")
@@ -61,6 +62,7 @@ for size in sizes:
     heatmap2 = heatmap2.append(row)
 
 heatmap2 = heatmap2.drop(columns=[0,366])
+heatmap2 = heatmap2.replace(np.nan, 0.0)
 sns.heatmap(heatmap2)
 # plt.gca().invert_yaxis()
 plt.xlabel("\nDAY OF YEAR")
@@ -84,6 +86,7 @@ for size in sizes:
     heatmap3 = heatmap3.append(row)
 
 heatmap3 = heatmap3.drop(columns=[0,366])
+heatmap3 = heatmap3.replace(np.nan, 0.0)
 sns.heatmap(heatmap3)
 # plt.gca().invert_yaxis()
 plt.xlabel("\nDAY OF YEAR")

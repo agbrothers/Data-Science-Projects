@@ -15,11 +15,11 @@ true_data = pd.read_csv('/Users/greysonbrothers/Desktop/ /- python/- data scienc
 data['class'] = data['class'].replace('Iris-setosa', -1)
 data['class'] = data['class'].replace('Iris-versicolor', 0)
 data['class'] = data['class'].replace('Iris-virginica', 1)
-
 true_data['class'] = true_data['class'].replace('Iris-setosa', -1)
 true_data['class'] = true_data['class'].replace('Iris-versicolor', 0)
 true_data['class'] = true_data['class'].replace('Iris-virginica', 1)
 
+""" FUNCTION FOR FINDING THE OPTIMAL K """
 def get_optimal_k(X, y, col, TYPE):
     neighbors = list(range(1,33,2))
     cv_scores = []
@@ -54,22 +54,16 @@ def get_optimal_k(X, y, col, TYPE):
     return(optimal_k)
 
 
-
+""" FUNCTION FOR IMPUTING MISSING VALUES FROM A SINGLE COLUMN/PREDICTOR """
 def impute_predictor(imputed_dataset, true_data, predictor, knn, TYPE):
-    
-    # AT THIS POINT WE HAVE OUR TRAINED MODEL
-    # GET THE SUBSET OF NA VALUES FOR THAT COLUMN AND FEED IT TO THE MODEL
-    # CHECK HOW MANY PREDICTORS HAVE NA for THAT ROW, MAKE SURE IT'S BELOW THE THRESHOLD
-    # INSERT & REPLACE THE nan VALUES WITH THESE NEW PREDICTIONS
-    # CHECK THE PREDICTIONS AGAINST THE TRUE VALUES
-    
     df = imputed_dataset.dropna()
     
     # Make a dataframe with all samples that have missing values we need to impute for the given predictor
     values_to_impute = imputed_dataset.drop(df.index)
     # We only want to impute values on samples where all other values are known or previously imputed
     values_to_impute = values_to_impute.drop(columns=[predictor]).dropna()
-        
+    
+    # Perform the imputation
     pred = knn.predict(values_to_impute)
     
     # Subset the truth dataset to find the accuracy of our imputation
@@ -85,12 +79,10 @@ def impute_predictor(imputed_dataset, true_data, predictor, knn, TYPE):
         print(f"Classification Accuracy: {error}\n\n")
     
     imputed_dataset[predictor][values_to_impute.index] = pred
-    
     return(imputed_dataset)
 
 
-
-
+""" FUNCTION FOR IMPUTING MISSING VALUES OVER AN ENTIRE DATASET """
 def knn_imputation(data, true_data):
    
     # LOOK AT HOW MANY nan VALUES THERE ARE PER PREDICTOR
@@ -116,10 +108,7 @@ def knn_imputation(data, true_data):
         X = df.drop(columns=col)
         y = df[col]
         
-       
-        # Check if the target variable is categorical or numerical via seeing if int values
-        # ints stored as floats bc there is no float representation of nan values
-        """ DETERMINE IF CATEGORICAL or NUMERICAL PREDICTION """
+        """ DETERMINE IF TARGET PREDICTOR IS CATEGORICAL or NUMERICAL """
         if np.mean([data[col].dropna()%1]) == 0:
             TYPE = 'classification'
             k = get_optimal_k(X, y, col, TYPE)
@@ -133,57 +122,19 @@ def knn_imputation(data, true_data):
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=42)
         knn.fit(X_train,y_train)
         pred = knn.predict(X_test)
+        
         if TYPE == 'classification':
             accuracy = accuracy_score(y_test, pred)
         else:
             df = pd.DataFrame({'Actual': y_test, 'Prediction':pred, 'Error':np.abs(y_test - pred)})
             accuracy = 1 - np.mean(pow(df['Error'],2))   # 1 - Mean Squared Error
-            
-            
         print("Predictor: ", col, "\nKNN Accuracy: ", accuracy)
-        
-        
-        """ IMPUTATE THE DATA """
-        # CHECK HOW MANY PREDICTORS HAVE NA for THAT ROW, MAKE SURE IT'S BELOW THE THRESHOLD
-        # INSERT & REPLACE THE nan VALUES WITH THESE NEW PREDICTIONS
-        # CHECK THE PREDICTIONS AGAINST THE TRUE VALUES
-        
-        imputed_dataset = impute_predictor(imputed_dataset, true_data, col, knn, TYPE) 
+      
     
+        """ IMPUTATE THE DATA """
+        imputed_dataset = impute_predictor(imputed_dataset, true_data, col, knn, TYPE) 
     return(imputed_dataset)
     
     
-
+# Run the algorithm on the iris dataset
 imputation = knn_imputation(data, true_data)
-
-
-
-
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-# IMPUTE COL VALUES from COL'S WITH LEAST to MOST nan's
-    
-# As we go, we will begin imputing missing data while modeling on imputed columns
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    

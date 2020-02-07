@@ -5,11 +5,15 @@ from sklearn.neighbors import KNeighborsClassifier, KNeighborsRegressor
 from sklearn.metrics import accuracy_score, mean_squared_error, explained_variance_score
 from sklearn.model_selection import train_test_split, cross_val_score
 
+"""
+THIS ALGORITHM USES KNN CLASSIFICATION & REGRESSION 
+TO IMPUTE ALL MISSING/NaN VALUES IN A DATASET
+"""
 
-# IRIS DATA with MISSING VALUES
+# USING THE IRIS DATA SET WITH RANDOM nan VALUES INSERTED TO TEST THE ALGO
 names = ['sepal_length','sepal_width','petal_length','petal_width','class']
-data = pd.read_csv('/Users/greysonbrothers/Desktop/ /- python/- data science/- data/iris_impute.csv', names=names)
-true_data = pd.read_csv('/Users/greysonbrothers/Desktop/ /- python/- data science/- data/iris.csv', names=names)
+data = pd.read_csv('iris_with_nans.csv', names=names)
+true_data = pd.read_csv('iris.csv', names=names)
 
 # CODE ANY CATEGORICAL DATA HERE PRIOR TO RUNNING THE IMPUTATION FUNCTION
 data['class'] = data['class'].replace('Iris-setosa', -1)

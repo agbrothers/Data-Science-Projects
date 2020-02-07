@@ -28,7 +28,7 @@ def get_optimal_k(X, y, col, TYPE):
     neighbors = list(range(1,33,2))
     cv_scores = []
     
-    """ CLARIFY IF REGRESSING OR CLASSIFYING """
+    """ FIND ERROR FOR EACH K """
     for k in neighbors:
         if TYPE == 'classification':
             knn = KNeighborsClassifier(n_neighbors=k)
@@ -45,16 +45,6 @@ def get_optimal_k(X, y, col, TYPE):
     # Choose the k with the minimum mean squared error    
     mse = [1 - x for x in cv_scores]
     optimal_k = neighbors[mse.index(min(mse))]
-    
-    """ PLOT ERROR VS K """
-    fig1 = plt.figure()
-    plt.plot(neighbors, mse)
-    plt.xlabel(f"Optimal Number of Neighbors K = {optimal_k}")
-    plt.ylabel("Error")
-    plt.grid(which='major', axis='x', linestyle='-', color='#DCDCDC')
-    plt.title(f"Error vs K {col}")
-    plt.show()
-        
     return(optimal_k)
 
 
@@ -89,25 +79,24 @@ def impute_predictor(imputed_dataset, true_data, predictor, knn, TYPE):
 """ FUNCTION FOR IMPUTING MISSING VALUES OVER AN ENTIRE DATASET """
 def knn_imputation(data, true_data):
    
-    # LOOK AT HOW MANY nan VALUES THERE ARE PER PREDICTOR
+    # LOOK AT HOW MANY NaN VALUES THERE ARE PER PREDICTOR
     cols = list(data.keys())
     num_nans = [data[col].isna().sum() for col in cols]
     
-    # Sort the columns by # of nan's they contain
+    # SORT THE PREDICTORS BY THE NUM OF NAN's ASSOCIATE WITH EACH
     num_nans, cols = zip(*sorted(zip(num_nans, cols)))
     
-    # Initialize the dataframe we want to add imputations to
+    # INITIALIZE THE DATAFRAME WE WANT TO ADD IMPUTATIONS TO
     imputed_dataset = data
-    
     print("\nVALUES IMPUTED: \n")
     
-    """ FIT A KNN MODEL FOR EACH PREDICTOR THAT HAS MISSING VALUES"""
+    """ FIT A KNN MODEL FOR EACH PREDICTOR THAT HAS MISSING VALUES """
     for col,nans in zip(cols,num_nans):
-        # Check if there are any nan values for that predictor
+        # CHECK TO SEE IF THERE ARE ANY NaN VALUES FOR THAT PREDICTOR
         if nans == 0:
             continue
         
-        # Drop all na values and build dataframes for training
+        # BUILD THE TRAINING DATAFRAMES
         df = data.dropna()
         X = df.drop(columns=col)
         y = df[col]

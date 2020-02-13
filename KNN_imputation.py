@@ -8,6 +8,7 @@ from sklearn.model_selection import train_test_split, cross_val_score
 """
 THIS ALGORITHM USES KNN CLASSIFICATION & REGRESSION 
 TO IMPUTE ALL MISSING/NaN VALUES IN A DATASET
+(Version 1, many things to clean up & improve upon)
 """
 
 # USING THE IRIS DATA SET WITH RANDOM nan VALUES INSERTED TO TEST THE ALGO
@@ -16,6 +17,7 @@ data = pd.read_csv('iris_with_nans.csv', names=names)
 true_data = pd.read_csv('iris.csv', names=names)
 
 # CODE ANY CATEGORICAL DATA HERE PRIOR TO RUNNING THE IMPUTATION FUNCTION
+# Want to automate this eventually
 data['class'] = data['class'].replace('Iris-setosa', -1)
 data['class'] = data['class'].replace('Iris-versicolor', 0)
 data['class'] = data['class'].replace('Iris-virginica', 1)

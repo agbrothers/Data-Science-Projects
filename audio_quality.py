@@ -8,7 +8,7 @@ import librosa
 import noisereduce as nr
 
 
-""" Lots of plotting to help visualize & improve the quality of our input """
+""" Automatically Identify & Reduce Noise, Plotting for Visualization """
 
 def plot_noise_reduction(file):
     # Plots Noise Reduction Visualizations for the provided audio files

@@ -13,7 +13,7 @@ from keras.utils import np_utils
 
 
 """ DEFINE TRAIN/VALIDATION/TEST DATASETS """
-data = pd.read_csv('preprocessed_audio.csv')
+data = pd.read_csv('audio_features.csv')
 X = data.drop(columns=['Label'])
 y = data['Label']
 

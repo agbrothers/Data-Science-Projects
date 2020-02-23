@@ -18,7 +18,7 @@ def minMaxNormalize(arr):
     return((arr-mn) / (mx-mn))
 
 def processAudio(audio, label):
-    noise = audio[0:25000]
+    noise = audio[0:int(len(audio)/8)]
     audio = nr.reduce_noise(audio, noise, verbose=False)
     audio, index = librosa.effects.trim(audio, top_db=20, frame_length=512, hop_length=64)
         

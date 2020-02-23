@@ -6,9 +6,9 @@ import librosa
 
 """
 Preprocessing audio files from the UrbanSounds dataset for use in training a Neural Network
-in sound classification problems.  Each audio file is converted to a vector with average
-amplitude per frequency bin via Short Time Fourier Transform & mean flattening.  Audio 
-vectors are stored in a dataframe and exported for future use.  
+in sound classification problems.  Each audio file is converted to a vector with entries 
+corresponding to average amplitude per frequency bin via Short Time Fourier Transform and
+flattening by mean.  Audio vectors are stored in a dataframe and exported for future use.  
 """
 
 # Functions

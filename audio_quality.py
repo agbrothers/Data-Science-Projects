@@ -8,7 +8,7 @@ import librosa
 import noisereduce as nr
 
 
-""" Automatically Identify & Reduce Noise, Plotting for Visualization """
+""" AUTOMATICALLY IDENTIFY & REDUCE NOISE, PLOTTING FOR VISUALIZATION """
 
 def plot_noise_reduction(file):
     # Plots Noise Reduction Visualizations for the provided audio files
@@ -30,7 +30,7 @@ def plot_noise_reduction(file):
 
     fig = plt.figure(figsize=(9,9))
     ax1 = fig.add_subplot(3,1,1)
-    plt.title(label.replace('/',''))
+    plt.title(label.strip('/'))
     ax1.tick_params(labelsize=6)
     ax1 = plt.plot(audio, color='k', lw=0.5, alpha=0.9)
     
@@ -45,7 +45,6 @@ def plot_noise_reduction(file):
     ax3.tick_params(labelsize=6)
     ax3 = plt.plot(audio, color='b', lw=0.5, alpha=0.3)
     ax3 = plt.plot(reduced_noise, color='k', lw=0.5, alpha=0.9)
-
     plt.tight_layout()
 
 
@@ -60,6 +59,5 @@ while k < num_samples:
     label = random.choice(folders) + '/'
     index = random.randint(0, len(os.listdir(directory + label))-1)
     file = os.listdir(directory + label)[index]
-    
     plot_noise_reduction(file)
     k+=1

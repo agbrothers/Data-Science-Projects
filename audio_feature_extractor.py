@@ -12,6 +12,10 @@ flattening by mean.  Audio vectors are stored in a dataframe and exported for fu
 """
 
 # Functions
+def center(arr):
+    mn = np.min(arr)
+    return(arr-mn)
+
 def minMaxNormalize(arr):
     mn = np.min(arr)
     mx = np.max(arr)
@@ -22,8 +26,8 @@ def findNoise(audio):
     step_size = int(audio.shape[0]/8)
     intervals = [[i, i + step_size] for i in range(0, audio.shape[0] - step_size, step_size)]
     
-    # Find the variance of the change in amplitude over each interval and take the min as the noisey interval
-    std = [np.std(audio[i[0]:i[1]]) for i in intervals]
+    # Find the variance of the change in amplitude over each interval and take the min as the noisy interval
+    std = [np.std(center(audio[i[0]:i[1]])) for i in intervals]
     noisy_part = intervals[np.argmin(std)]
     noise = audio[noisy_part[0]:noisy_part[1]]
     return(noise)
@@ -33,7 +37,7 @@ def processAudio(file, label):
     audio = nr.reduce_noise(audio, findNoise(audio), verbose=False)
     audio, index = librosa.effects.trim(audio, top_db=20, frame_length=512, hop_length=64)
         
-    stft = np.abs(librosa.stft(audio, n_fft=512, hop_length=256, win_length=512))
+    stft = np.abs(librosa.stft(audio, n_fft=512, hop_length=256, win_length=512)) #???
     stft = np.mean(stft, axis=1)
     stft = minMaxNormalize(stft)
         

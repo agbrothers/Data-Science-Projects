@@ -33,15 +33,17 @@ def findNoise(audio):
     return(noise)
 
 def processAudio(file, label):
-    audio, rate = librosa.load(directory + '/' + folder + '/' + file)
+    audio,sr = librosa.load(file)
     audio = nr.reduce_noise(audio, findNoise(audio), verbose=False)
-    audio, index = librosa.effects.trim(audio, top_db=20, frame_length=512, hop_length=64)
-        
-    stft = np.abs(librosa.stft(audio, n_fft=512, hop_length=256, win_length=512)) #???
-    stft = np.mean(stft, axis=1)
-    stft = minMaxNormalize(stft)
-        
-    df = pd.DataFrame([stft])
+    audio,_ = librosa.effects.trim(audio, top_db=20, frame_length=512, hop_length=64)
+
+    n_mels = 257
+    mel = librosa.feature.melspectrogram(audio, sr=sr, n_fft=2048, hop_length=512, n_mels=n_mels)
+    mel = librosa.power_to_db(mel, ref=np.max)
+    mel = np.mean(mel, axis=1)
+    mel = minMaxNormalize(mel)
+    df = pd.DataFrame([mel])
+    
     df['Label'] = label
     return(df)
 
@@ -56,7 +58,8 @@ for folder in os.listdir(directory):
         continue
     for file in os.listdir(directory + '/' + folder + '/'):
         if file == '.DS_Store':
-            continue    
-        master_df = master_df.append( processAudio(file, folder))
+            continue  
+        path = directory + '/' + folder + '/' + file
+        master_df = master_df.append(processAudio(path, folder))
         
 master_df.to_csv('audio_features.csv')

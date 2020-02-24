@@ -26,7 +26,7 @@ def findNoise(audio):
     step_size = int(audio.shape[0]/8)
     intervals = [[i, i + step_size] for i in range(0, audio.shape[0] - step_size, step_size)]
     
-    # Find the variance of the change in amplitude over each interval and take the min as the noisy interval
+    # Find the std of the centered amplitudes over each interval and take the interval with smallest std as the noise
     std = [np.std(center(audio[i[0]:i[1]])) for i in intervals]
     noisy_part = intervals[np.argmin(std)]
     noise = audio[noisy_part[0]:noisy_part[1]]
